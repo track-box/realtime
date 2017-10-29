@@ -92,7 +92,12 @@ function initTrackboxGoal() {
             $("#waypoint-info-name").text(name);
             $("#waypoint-info-add").attr("name", name);
             $("#waypoint-info-href").attr("href", "http://maps.google.com/maps?q="+ lat +","+ lon);
-            $("#waypoint-info").openModal();	
+            $("#waypoint-info").modal().modal('open');
+
+            $("#waypoint-info-add").click(function(){
+                trackbox.goals.addGoal($(this).attr("name"), true);
+                $("#waypoint-info").modal("close");
+            });
         };
 
         var panes = this.getPanes();

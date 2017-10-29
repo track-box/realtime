@@ -28,6 +28,11 @@ function TrackboxFirebaseTracking(trackid, map) {
         });
     });
     
+    this.goals = this.db.ref("/tracks/" + trackid + "/goals");
+    this.goals.on("child_added", function(d) {
+        self.goalAdded(d);
+    });
+    
     this.track = new TrackboxTrack(map);
 
     this.$alt = $("#footer-altitude span");
@@ -86,5 +91,12 @@ TrackboxFirebaseTracking.prototype.setLastPointInfo = function(alt, heading, spe
     var speed_str = (speed && speed != -1) ? speed.toFixed(1) : "-";
     this.$speed.text(speed_str);
 
+};
+
+TrackboxFirebaseTracking.prototype.goalAdded = function(d) {
+    var goal = d.val();
+    console.log(goal);
+
+    trackbox.goals._addPoint(goal.name, goal.lat, goal.lon, true);
 };
 

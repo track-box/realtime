@@ -91,17 +91,8 @@ TrackboxGoals.prototype._addPoint = function(name, lat, lon, noshow) {
 	});
 	
 	if (!noshow) this._showGoal(pos);
-
-
-    // goal sheet
-	//var row2 = this._sheet.insertRow(-1);
-	//row2.insertCell(-1).innerHTML = name;
-	//row2.insertCell(-1).innerHTML = "...";
-	//row2.insertCell(-1).innerHTML = "...";
-
-	//var self = this;
-	//row2.onclick = function () { self._showGoal(pos); };
     
+	var self = this;
 	marker.addListener('click', function() {
 		self._showMarkerInfo(name);
 	});
@@ -109,8 +100,7 @@ TrackboxGoals.prototype._addPoint = function(name, lat, lon, noshow) {
     
 	this._goals[name] = {
 		pos: pos,
-		marker: marker,
-	//	sheet: row2	
+		marker: marker
 	};
 
 	//this.updatePosition();
@@ -124,7 +114,7 @@ TrackboxGoals.prototype._showMarkerInfo = function(name) {
 		var lon = goal.pos.lng();
 		$("#marker-info-name").text(name);
 		$("#marker-info-href").attr("href", "http://maps.google.com/maps?q="+ lat +","+ lon);
-		$("#marker-info").openModal();
+		$("#marker-info").modal().modal("open");
 	}
 };
 

@@ -16,7 +16,7 @@ function TrackboxTrack(map) {
 TrackboxTrack.prototype.drawDirection = function (position, speed, heading){
     var distance = speed * 60 * 5; // 5min
     var target;
-    if (heading && heading != "-"){
+    if (heading && heading != "-" && heading != -1){
         target = google.maps.geometry.spherical.computeOffset(position, distance, heading);
     }
 
