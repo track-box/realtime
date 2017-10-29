@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">-->
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link type="text/css" rel="stylesheet" href="lib/material-icons.css"  media="screen,projection"/>
+	<link type="text/css" rel="stylesheet" href="lib/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="menu-button">
+		<a data-activates="slide-out" class="btn-floating btn-large waves-effect waves-light light-blue">
+			<svg viewBox="0 0 512 500" style="display: inline-block; color: rgb(255, 255, 255); fill: rgb(255, 255, 255); height: 56px; width: 28px; user-select: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms; line-height: 56px; margin-right: 2px;"><path d="M0.043,245.197c0.6,10.1,7.3,18.6,17,21.5l179.6,54.3l6.6,123.8c0.3,4.9,3.6,9.2,8.3,10.8c1.3,0.5,2.7,0.7,4,0.7 c3.5,0,6.8-1.4,9.2-4.1l63.5-70.3l90,62.3c4,2.8,8.7,4.3,13.6,4.3c11.3,0,21.1-8,23.5-19.2l74.7-380.7c0.9-4.4-0.8-9-4.2-11.8 c-3.5-2.9-8.2-3.6-12.4-1.9l-459,186.8C5.143,225.897-0.557,235.097,0.043,245.197z M226.043,414.097l-4.1-78.1l46,31.8 L226.043,414.097z M391.443,423.597l-163.8-113.4l229.7-222.2L391.443,423.597z M432.143,78.197l-227.1,219.7l-179.4-54.2 L432.143,78.197z"></path></svg>
+		</a>
+	</div>
+	<div id="goal-button" class="bottom-button">
+		<a class="btn-floating waves-effect waves-light white">
+			<i class="material-icons">location_on</i>
+		</a>
+	</div>
+	<div id="location-button" class="bottom-button">
+		<a class="btn-floating waves-effect waves-light white">
+			<i class="material-icons">my_location</i>
+		</a>
+	</div>
+    
+    <ul id="slide-out" class="side-nav">
+        <li class="track-nav"><a class="subheader">2017.11.01.am</a></li>
+        <li class="track-nav"><a id="start-tracking"><i class="material-icons">play_arrow</i>Start tracking</a></li>
+        <li class="track-nav"><a><i class="material-icons">link</i>Link</a></li>
+        <li class="track-nav"><div class="divider"></div></li>
+        <li><a id="new-track"><i class="material-icons">add_box</i>New track</a></li>
+        <li><a><i class="material-icons">storage</i>Log</a></li>
+        <li><a><i class="material-icons">settings</i>Settings</a></li>
+    </ul>
+    
+    <div id="footer-bar">
+        <div id="footer-time"><span>00:00:00</span></div>
+        <div id="footer-altitude"><span>-</span><br>m</div>
+        <div id="footer-heading"><span>-</span><br>deg</div>
+        <div id="footer-speed"><span>-</span><br>m/s</div>
+	</div>
+    
+	<div id="goal-modal" class="modal">
+		<div id="goal-modal-content" class="modal-content">
+			<form id="goal-modal-form" class="col s8">
+				<div id="goal-modal-row" class="row">
+					<div class="input-field col s12">
+						<input id="goal-modal-number" type="tel" placeholder="302 or 16008000">
+						<label for="goal-number">Goal number or Digit</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a id="goal-modal-add" class="waves-effect waves-light btn red">add</a>
+		</div>
+	</div>
+    
+    <div id="goal-sheet" class="modal bottom-sheet">
+		<div class="modal-content">
+			<h5>Goals</h5>
+			<table id="goal-sheet-table" class="bordered highlight">
+				<thead>
+					<tr>
+						<th>Number</th>
+						<th>Distance</th>
+						<th>Heading</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+    
+    <!--<script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>-->
+	<script type="text/javascript" src="lib/materialize.min.js"></script>
+    <script src="index.js"></script>
+    
+    <script src="lib/firebase-4.6.0.js"></script>
+    <script src="lib/markerclusterer.js"></script>
+    <script src="lib/proj4.js"></script>
+
+	<script src="js/trackbox-waypoint.js"></script>
+	<script src="js/trackbox-goals.js"></script>
+	<script src="js/trackbox-map.js"></script>
+    <script src="js/trackbox-track.js"></script>
+    <script src="js/trackbox-firebase.js"></script>
+	<script src="js/map.js"></script>
+    <script src="js/tracking.js"></script>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5tPBVnaUVQt8Uf-RUMhJGLLnIlXtoLkQ&libraries=geometry&callback=onMapsApiLoaded"></script>
+</body>
+</html>
