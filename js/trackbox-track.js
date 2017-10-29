@@ -13,11 +13,13 @@ function TrackboxTrack(map) {
     this.trackPoints = [];
 }
 
-TrackboxTrack.prototype.drawDirection = function (pos){
-    var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-    var distance = pos.coords.speed * 60 * 5; // 5min
-    var target = google.maps.geometry.spherical.computeOffset(position, distance, pos.coords.heading);
-    
+TrackboxTrack.prototype.drawDirection = function (position, speed, heading){
+    var distance = speed * 60 * 5; // 5min
+    var target;
+    if (heading && heading != "-"){
+        target = google.maps.geometry.spherical.computeOffset(position, distance, heading);
+    }
+
     if (target){
         if (this._direction){
             this._direction.setPath([ position, target ]);
@@ -31,17 +33,23 @@ TrackboxTrack.prototype.drawDirection = function (pos){
 		        map: this.map
 	        });
         }
+
+    }else{
+        if (this._direction){
+            this._direction.setPath([]);
+        }
     }
 };
 
-TrackboxTrack.prototype.addTrackPoint = function (pos){
-    var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+TrackboxTrack.prototype.addTrackPoint = function (position, alt){
     this.trackPoints.push({ pos: position });
-    
+   
+    if (!alt) alt = 0;
+
     if (this.prevPos){
-        this._drawPolyline(this.prevPos, position, pos.coords.altitude);
+        this._drawPolyline(this.prevPos, position, alt);
     }else{
-        this._startAlt = pos.coords.altitude;
+        this._startAlt = alt;
     }
     this.prevPos = position;
 };
@@ -114,3 +122,25 @@ TrackboxTrack.prototype._fixedGradient = function(x) {
 TrackboxTrack.prototype._doubleHex = function(x) {
 	return ( x < 16 ) ? "0" + x.toString(16) : x.toString(16);
 };
+
+TrackboxTrack.prototype.drawLastPosition = function(position) {
+    if (!this._currentPosMarker) {
+        this._currentPosMarker = new google.maps.Marker({
+            position: position,
+            map: this.map,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 6,
+                fillOpacity: 1,
+                fillColor: '#1faee3',
+                strokeWeight: 1,
+                strokeColor: '#4591c5'
+            }
+        });
+
+    }else{
+        this._currentPosMarker.setPosition(position);
+    }
+};
+
+

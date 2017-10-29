@@ -3,9 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">-->
-    <script src="components/loader.js"></script>
-    <link rel="stylesheet" href="components/loader.css">
     <link type="text/css" rel="stylesheet" href="lib/material-icons.css"  media="screen,projection"/>
 	<link type="text/css" rel="stylesheet" href="lib/materialize.min.css"  media="screen,projection"/>
     <link rel="stylesheet" href="css/style.css">
@@ -30,18 +27,8 @@
 		</a>
 	</div>
     
-    <ul id="slide-out" class="side-nav">
-        <li class="track-nav"><a class="subheader">2017.11.01.am</a></li>
-        <li class="track-nav"><a id="start-tracking"><i class="material-icons">play_arrow</i>Start tracking</a></li>
-        <li class="track-nav"><a><i class="material-icons">link</i>Link</a></li>
-        <li class="track-nav"><div class="divider"></div></li>
-        <li><a id="new-track"><i class="material-icons">add_box</i>New track</a></li>
-        <li><a><i class="material-icons">storage</i>Log</a></li>
-        <li><a><i class="material-icons">settings</i>Settings</a></li>
-    </ul>
     
     <div id="footer-bar">
-        <div id="footer-time"><span>00:00:00</span></div>
         <div id="footer-altitude"><span>-</span><br>m</div>
         <div id="footer-heading"><span>-</span><br>deg</div>
         <div id="footer-speed"><span>-</span><br>m/s</div>
@@ -63,25 +50,7 @@
 		</div>
 	</div>
     
-    <div id="goal-sheet" class="modal bottom-sheet">
-		<div class="modal-content">
-			<h5>Goals</h5>
-			<table id="goal-sheet-table" class="bordered highlight">
-				<thead>
-					<tr>
-						<th>Number</th>
-						<th>Distance</th>
-						<th>Heading</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
-	</div>
-    
-    <!--<script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>-->
+    <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="lib/materialize.min.js"></script>
     <script src="index.js"></script>
     

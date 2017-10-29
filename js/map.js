@@ -1,4 +1,4 @@
-var map, trackbox, tracking;
+var map, trackbox = {};
 
 function onMapsApiLoaded() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -23,14 +23,13 @@ function onMapsApiLoaded() {
         waypoint_url: "https://track-box.github.io/trackbox-map/saga2017/waypoint.json"
     };
 
-    var trackboxMap = new TrackboxMap(mapdef);
-    trackboxMap.addTo(map);
-    var trackboxGoals = new TrackboxGoals(map, trackboxMap);
-    
-    trackbox = {
-        map: trackboxMap,
-        goals: trackboxGoals
-    };
-    
-    tracking = new Tracking();
+    trackbox.map = new TrackboxMap(mapdef);
+    trackbox.map.addTo(map);
+    trackbox.goals = new TrackboxGoals(map, trackbox.map);
+
+    if (location.hash){
+        var trackid = location.hash.substr(1);
+        trackbox.firebaseTracking = new TrackboxFirebaseTracking(trackid, map);
+    }
+
 }

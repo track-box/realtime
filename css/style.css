@@ -1,11 +1,3 @@
-/**/
-
-/*
-* {
-    -webkit-tap-highlight-color: rgba(0,0,0,0); */
-/* make transparent link selection, adjust last value opacity 0 to 1.0 */
-
-
 html, body {
     height:100%;
     margin:0px;
@@ -32,8 +24,8 @@ body {
 #location-button { position:absolute; bottom:25px; right:10px; }
 .btn-floating.white i { color: #9e9e9e; }
 
-#goal-button.tracking { bottom:105px; }
-#location-button.tracking { bottom:60px; }
+#goal-button { bottom:105px; }
+#location-button { bottom:60px; }
 
 #goal-modal-row { margin-bottom:0; }
 #goal-modal-content { padding-bottom:0; }
@@ -52,12 +44,11 @@ body {
     width: 100%;
     height: 50px;
     background: #fff;
-    display: none;
 }
 
 #footer-bar div {
     display: inline-block;
-    width: 24%;
+    width: 33%;
     height: 50px;
     box-sizing: border-box;
     text-align: center;
