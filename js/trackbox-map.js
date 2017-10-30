@@ -35,7 +35,7 @@ TrackboxMap.prototype.addTo = function(map) {
 	this._show = true;
 
 	if (this._def.waypoint_url){
-		this._waypoint = new TrackboxWaypoint(this._def.waypoint_url, map);
+		this._waypoint = new TrackboxWaypoints(this._def.waypoint_url, map);
 	}
 };
 
@@ -127,7 +127,7 @@ TrackboxMap.prototype._setOverlayControl = function() {
 	controlUI.style.borderRadius = '2px';
 	controlUI.style.boxShadow = '0 1px 4px -1px rgba(0,0,0,.3)';
 	controlUI.style.cursor = 'pointer';
-	controlUI.style.marginTop = '24px';
+	controlUI.style.marginTop = '10px';
 	controlUI.style.marginRight = '10px';
 	controlUI.style.padding = '10px';
 	controlUI.style.textAlign = 'center';

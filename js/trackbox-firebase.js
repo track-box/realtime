@@ -23,14 +23,26 @@ function TrackboxFirebaseTracking(trackid, map) {
         var startTime = self.initTrack(d);
 
         // on added filter by timestamp
-        self.trackPoints.orderByChild("0").startAt(startTime + 1).on("child_added", function(d) {
-            self.trackPointAdded(d);
-        });
+        if (startTime){
+            self.trackPoints.orderByChild("0").startAt(startTime + 1).on("child_added", function(d) {
+                self.trackPointAdded(d);
+            });
+        }else{
+            self.trackPoints.on("child_added", function(d) {
+                self.trackPointAdded(d);
+            });
+        }
     });
     
     this.goals = this.db.ref("/tracks/" + trackid + "/goals");
     this.goals.on("child_added", function(d) {
         self.goalAdded(d);
+    });
+    this.goals.on("child_changed", function(d) {
+        self.goalChanged(d);
+    });
+    this.goals.on("child_removed", function(d) {
+        self.goalRemoved(d);
     });
     
     this.track = new TrackboxTrack(map);
@@ -54,13 +66,14 @@ TrackboxFirebaseTracking.prototype.initTrack = function(d) {
         this.track.addTrackPoint(position, alt);
     }
 
-    // last point
-    this.setLastPointInfo(alt, heading, speed);
-     
-    this.track.drawLastPosition(position);
-    this.track.drawDirection(position, speed, heading);
-
-    return timestamp;
+    if (points){
+        // last point
+        this.setLastPointInfo(alt, heading, speed);
+         
+        this.track.drawLastPosition(position);
+        this.track.drawDirection(position, speed, heading);
+        return timestamp;
+    }
 };
 
 
@@ -97,6 +110,16 @@ TrackboxFirebaseTracking.prototype.goalAdded = function(d) {
     var goal = d.val();
     console.log(goal);
 
-    trackbox.goals._addPoint(goal.name, goal.lat, goal.lon, true);
+    trackbox.goals.addRemoteGoal(d.key, goal);
 };
 
+TrackboxFirebaseTracking.prototype.goalChanged = function(d) {
+    var goal = d.val();
+    console.log(goal);
+
+    trackbox.goals.updateRemoteGoal(d.key, goal);
+};
+
+TrackboxFirebaseTracking.prototype.goalRemoved = function(d) {
+    trackbox.goals.deleteRemoteGoal(d.key);
+};

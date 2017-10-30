@@ -19,7 +19,7 @@ body {
 	width: 100%;
 }
 
-#menu-button { position:absolute; top:20px; left:10px; }
+#menu-button { position:absolute; top:10px; left:10px; }
 #goal-button { position:absolute; bottom:70px; right:10px; }
 #location-button { position:absolute; bottom:25px; right:10px; }
 .btn-floating.white i { color: #9e9e9e; }
@@ -33,7 +33,6 @@ body {
 
 
 
-#slide-out { padding-top: 20px; }
 .track-nav {
     display: none;
 }

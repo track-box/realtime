@@ -18,8 +18,8 @@ function TrackboxGoals(map, trackboxMap) {
 	this._utm.ybase = Math.floor(this._utm.ymax / 100000) * 100000;
 
 	this._goals = {};
-	
-	this._sheet = document.getElementById("goal-sheet-table");
+
+    TrackboxGoal = initTrackboxGoal();	
 }
 
 TrackboxGoals.prototype.addGoal = function(x, noshow) {
@@ -99,11 +99,40 @@ TrackboxGoals.prototype._addPoint = function(name, lat, lon, noshow) {
 
     
 	this._goals[name] = {
+        name: name,
 		pos: pos,
 		marker: marker
 	};
 
 	//this.updatePosition();
+};
+
+TrackboxGoals.prototype.addRemoteGoal = function(id, data) {
+	var pos = new google.maps.LatLng(data.lat, data.lon);
+    var goal = new TrackboxGoal(id, data.name, pos, { coord: data.coord, circle: data.circle }, this.map);
+    
+	this._goals[id] = {
+		pos: pos,
+		goal: goal,
+        name: data.name
+	};
+};
+
+TrackboxGoals.prototype.updateRemoteGoal = function (key, data){
+    if (data.name != this._goals[key].name){
+        this._goals[key].name = data.name;
+        this._goals[key].goal.setName(data.name);
+    }
+
+    if (data.circle && data.circle.length > 0){
+        this._goals[key].circle = data.circle;
+        this._goals[key].goal.setCircles(data.circle);
+    }
+};
+
+TrackboxGoals.prototype.deleteRemoteGoal = function (key) {
+    this._goals[key].goal.delete();
+    this._goals[key] = null;
 };
 
 
@@ -112,7 +141,7 @@ TrackboxGoals.prototype._showMarkerInfo = function(name) {
 		var goal = this._goals[name];
 		var lat = goal.pos.lat();
 		var lon = goal.pos.lng();
-		$("#marker-info-name").text(name);
+		$("#marker-info-name").text(goal.name);
 		$("#marker-info-href").attr("href", "http://maps.google.com/maps?q="+ lat +","+ lon);
 		$("#marker-info").modal().modal("open");
 	}

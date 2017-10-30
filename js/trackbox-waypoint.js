@@ -4,8 +4,11 @@
  */
 
 /** @constructor */
-function TrackboxWaypoint(url, map) {
+function TrackboxWaypoints(url, map) {
 	this.map = map;
+    
+    TrackboxWaypoint = initTrackboxWaypoint();
+
 	var self = this;
 	this._loadJSON(url, function(data){
 		self.data = data;
@@ -17,7 +20,7 @@ function TrackboxWaypoint(url, map) {
 };
 
 
-TrackboxWaypoint.prototype._loadJSON = function(url, callback) {
+TrackboxWaypoints.prototype._loadJSON = function(url, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('get', url, true);
 	xhr.onload = function(){
@@ -28,16 +31,14 @@ TrackboxWaypoint.prototype._loadJSON = function(url, callback) {
 };
 
 
-TrackboxWaypoint.prototype.showWaypoints = function() {
+TrackboxWaypoints.prototype.showWaypoints = function() {
 	var self = this;
 	var waypoints = this.data.waypoints;
 	var markers = [];
 
-    TrackboxGoal = initTrackboxGoal();
-
 	Object.keys(waypoints).forEach(function(key){
 		var pos = new google.maps.LatLng(waypoints[key].lat, waypoints[key].lon);
-		markers.push(new TrackboxGoal(key, pos, self.map));
+		markers.push(new TrackboxWaypoint(key, pos, self.map));
 	});
 		
 	this._markerCluster = new MarkerClusterer(this.map, markers, {
@@ -47,33 +48,33 @@ TrackboxWaypoint.prototype.showWaypoints = function() {
 	});
 };
 
-TrackboxWaypoint.prototype.showZoomgt = function(zoom) {
+TrackboxWaypoints.prototype.showZoomgt = function(zoom) {
 	this._markerCluster.setMaxZoom(zoom);
 	this._markerCluster.setMinZoom(zoom);
 	this._markerCluster.repaint();
 };
 
 
-function initTrackboxGoal() {
-    TrackboxGoal.prototype = new google.maps.OverlayView();
+function initTrackboxWaypoint() {
+    TrackboxWaypoint.prototype = new google.maps.OverlayView();
 
-    function TrackboxGoal(name, pos, map) {
+    function TrackboxWaypoint(name, pos, map) {
         this._name = name;
         this._pos = pos;
         this.map = map;
         //this.setMap(map);
     };
 
-    TrackboxGoal.prototype.getPosition = function() {
+    TrackboxWaypoint.prototype.getPosition = function() {
         return this._pos;
     };
 
-    TrackboxGoal.prototype.getMap = function() {
+    TrackboxWaypoint.prototype.getMap = function() {
         return this.map;
     };
 
 
-    TrackboxGoal.prototype.onAdd = function() {
+    TrackboxWaypoint.prototype.onAdd = function() {
         this._div = document.createElement('div');
 
         this._div.style.position = 'absolute';
@@ -93,34 +94,33 @@ function initTrackboxGoal() {
             $("#waypoint-info-add").attr("name", name);
             $("#waypoint-info-href").attr("href", "http://maps.google.com/maps?q="+ lat +","+ lon);
             $("#waypoint-info").modal().modal('open');
-
+            
             $("#waypoint-info-add").click(function(){
-                trackbox.goals.addGoal($(this).attr("name"), true);
-                $("#waypoint-info").modal("close");
-            });
+			    trackbox.goals.addGoal($(this).attr("name"));
+			    $("#waypoint-info").modal("close");
+		    });
         };
 
         var panes = this.getPanes();
         panes.overlayMouseTarget.appendChild(this._div);
     };
 
-    TrackboxGoal.prototype.onRemove = function() {
+    TrackboxWaypoint.prototype.onRemove = function() {
         if (this._div && this._div.parentNode) {
             this._div.parentNode.removeChild(this._div);
             this._div = null;
         }
     };
 
-    TrackboxGoal.prototype.draw = function() {
+    TrackboxWaypoint.prototype.draw = function() {
         var pos = this._getPosFromLatLng(this._pos);
         this._div.style.left = (pos.x - 11) + 'px';
         this._div.style.top = (pos.y - 5) + 'px';
     };
 
-    TrackboxGoal.prototype._getPosFromLatLng = function(latlng) {
+    TrackboxWaypoint.prototype._getPosFromLatLng = function(latlng) {
         return this.getProjection().fromLatLngToDivPixel(latlng);
     };
 
-    return TrackboxGoal;
+    return TrackboxWaypoint;
 }
-
