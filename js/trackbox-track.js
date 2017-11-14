@@ -63,12 +63,12 @@ TrackboxTrack.prototype._drawPolyline = function (p1, p2, alt){
 		strokeColor: color,
 		strokeWeight: 4,
 		strokeOpacity: 1,
+        zIndex: 10,
 		map: this.map
 	});
     
 	var self = this;
     google.maps.event.addListener(polyline, 'click', function(e){
-        console.log(e);
 	    self.showInfoWindowFromLatLng(e.latLng.lat(), e.latLng.lng());
 	});
 };
@@ -143,7 +143,6 @@ TrackboxTrack.prototype.showInfoWindowFromLatLng = function (lat, lng){
         }
     }
 
-    console.log(min_i);
     this.showInfoWindow(min_i);
 };
 

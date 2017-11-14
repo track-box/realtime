@@ -115,7 +115,9 @@ TrackboxGoal.prototype.drawCircle = function(i, radius) {
 	    	strokeOpacity: 0.8,
 		    strokeWeight: 2,
 	    	fillColor: "#ffffff",
-    		fillOpacity: 0
+    		fillOpacity: 0,
+            clickable: false,
+            zIndex: 1
 	    });
     }else{
         this._circles[i].setRadius(radius);
