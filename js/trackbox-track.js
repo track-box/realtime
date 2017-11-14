@@ -10,7 +10,7 @@ function TrackboxTrack(map) {
     this.prevPos;
     this._startAlt;
     this._direction;
-    this.trackPoints = [];
+    this.track = [];
 }
 
 TrackboxTrack.prototype.drawDirection = function (position, speed, heading){
@@ -41,9 +41,10 @@ TrackboxTrack.prototype.drawDirection = function (position, speed, heading){
     }
 };
 
-TrackboxTrack.prototype.addTrackPoint = function (position, alt){
-    this.trackPoints.push({ pos: position });
-   
+TrackboxTrack.prototype.addTrackPoint = function (position, point){
+    this.track.push(point);
+  
+    var alt = point[3];
     if (!alt) alt = 0;
 
     if (this.prevPos){
@@ -64,25 +65,12 @@ TrackboxTrack.prototype._drawPolyline = function (p1, p2, alt){
 		strokeOpacity: 1,
 		map: this.map
 	});
-};
-
-TrackboxTrack.prototype._drawPath = function (){
-	for (var i = 0; i < this.track.length - 1; i++){
-		var color = this._fixedGradient(this.track[i].alt);
-
-		var polyline = new google.maps.Polyline({
-			path: [ this.track[i].pos, this.track[i+1].pos ],
-			strokeColor: color,
-			strokeWeight: 4,
-			strokeOpacity: 1,
-			map: this.map
-		});
-
-		var self = this;
-		//google.maps.event.addListener(polyline, 'click', function(e){
-		//	self.showInfoWindowFromLatLng(e.latLng.lat(), e.latLng.lng());
-		//});
-	}
+    
+	var self = this;
+    google.maps.event.addListener(polyline, 'click', function(e){
+        console.log(e);
+	    self.showInfoWindowFromLatLng(e.latLng.lat(), e.latLng.lng());
+	});
 };
 
 
@@ -143,4 +131,41 @@ TrackboxTrack.prototype.drawLastPosition = function(position) {
     }
 };
 
+TrackboxTrack.prototype.showInfoWindowFromLatLng = function (lat, lng){
+    var min, min_i = 0;
+    for (var i = 0; i < this.track.length; i++){
+        var d = Math.pow(this.track[i][1] - lat, 2) + Math.pow(this.track[i][2] - lng, 2);
+        if (i == 0){
+            min = d;
+        }else if (d < min){
+            min = d;
+            min_i = i;
+        }
+    }
+
+    console.log(min_i);
+    this.showInfoWindow(min_i);
+};
+
+
+TrackboxTrack.prototype.showInfoWindow = function (t){
+    if (this._preventInfoWindow) return;
+    if (this._infoWindow) this._infoWindow.close();
+
+    function pad(n) { return n<10 ? '0'+n : n; }
+    var date = new Date(this.track[t][0]);
+
+    var content = '<div class="track-info-window" style="font-size:12px; line-height:16px;">' +
+        pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + "<br>" +
+        "altitude: " + Math.round(this.track[t][3]) + " m<br>" +
+        "speed:    " + Math.round(this.track[t][4]*10)/10 + " m/s<br>" +
+        "heading:  " + Math.round(this.track[t][5]) + "°" +
+        '</div>';
+
+    this._infoWindow = new google.maps.InfoWindow({
+        content: content,
+        position: new google.maps.LatLng(this.track[t][1], this.track[t][2])
+    });
+    this._infoWindow.open(this.map);
+};
 

@@ -63,7 +63,7 @@ TrackboxFirebaseTracking.prototype.initTrack = function(d) {
         timestamp = point[0];
         speed = point[4];
         heading = point[5];
-        this.track.addTrackPoint(position, alt);
+        this.track.addTrackPoint(position, point);
     }
 
     if (points){
@@ -92,7 +92,7 @@ TrackboxFirebaseTracking.prototype.trackPointAdded = function(d) {
     // map
     this.track.drawLastPosition(position);
     this.track.drawDirection(position, speed, heading);
-    this.track.addTrackPoint(position, alt);
+    this.track.addTrackPoint(position, point);
 };
 
 TrackboxFirebaseTracking.prototype.setLastPointInfo = function(alt, heading, speed) {
