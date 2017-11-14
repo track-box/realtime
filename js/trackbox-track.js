@@ -126,6 +126,11 @@ TrackboxTrack.prototype.drawLastPosition = function(position) {
             }
         });
 
+        var self = this;
+        google.maps.event.addListener(this._currentPosMarker, 'click', function(e){
+            self.showInfoWindow(self.track.length - 1);
+        });
+
     }else{
         this._currentPosMarker.setPosition(position);
     }
@@ -156,9 +161,9 @@ TrackboxTrack.prototype.showInfoWindow = function (t){
 
     var content = '<div class="track-info-window" style="font-size:12px; line-height:16px;">' +
         pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + "<br>" +
-        "altitude: " + Math.round(this.track[t][3]) + " m<br>" +
-        "speed:    " + Math.round(this.track[t][4]*10)/10 + " m/s<br>" +
-        "heading:  " + Math.round(this.track[t][5]) + "°" +
+        "altitude: " + this.track[t][3].toFixed(0) + " m<br>" +
+        "speed:    " + this.track[t][4].toFixed(1) + " m/s<br>" +
+        "heading:  " + this.track[t][5].toFixed(0) + "°" +
         '</div>';
 
     this._infoWindow = new google.maps.InfoWindow({
