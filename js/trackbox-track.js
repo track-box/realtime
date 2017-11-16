@@ -156,7 +156,6 @@ TrackboxTrack.prototype.showInfoWindow = function(t) {
     if (this._preventInfoWindow) return;
     if (this._infoWindow) this._infoWindow.close();
 
-    function pad(n) { return n<10 ? '0'+n : n; }
     var date = new Date(this.track[t][0]);
 
     var content = '<div class="track-info-window" style="font-size:12px; line-height:16px;">' +
@@ -175,20 +174,33 @@ TrackboxTrack.prototype.showInfoWindow = function(t) {
 
 
 TrackboxTrack.prototype.drawGraph = function() {
+    if (this.track.length == 0) return; 
+
     // data
     var data_alt = [];
     var data_speed = [];
+    var max_alt = this.track[0][3], min_alt = this.track[0][3];
+
     for (var i = 0; i < this.track.length; i++){
         var trkp = this.track[i];
         var time = trkp[0] + 9 * 3600 * 1000;
-        data_alt.push([time, Math.round(trkp[3])]);
-        data_speed.push([time, Math.round(trkp[4]*10)/10]);
+        var alt = trkp[3], speed = trkp[4];
+        data_alt.push([time, Math.round(alt)]);
+        data_speed.push([time, Math.round(speed*10)/10]);
+
+        if (alt > max_alt) max_alt = alt;
+        if (alt < min_alt) min_alt = alt;
     }
 
+    this._drawChart(data_alt, data_speed);
+    this._setSummary(min_alt, max_alt);
+};
+
+TrackboxTrack.prototype._drawChart = function(data_alt, data_speed) {
     $('#graph').highcharts({
         chart: {
             zoomType: 'x',
-            height: 220,
+            height: 240,
             spacingTop: 30,
             spacingBottom: 0
         },
@@ -277,3 +289,28 @@ TrackboxTrack.prototype.hideMarker = function() {
     if (this._marker) this._marker.setMap(null);
 };
 
+
+TrackboxTrack.prototype._setSummary = function(min_alt, max_alt) {
+    var last = this.track.length - 1;
+    var pos1 = new google.maps.LatLng(this.track[0][1], this.track[0][2])
+    var pos2 = new google.maps.LatLng(this.track[last][1], this.track[last][2])
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2);
+    var distance_str = (distance / 1000).toFixed(1) + ' km';
+
+    var date = new Date(this.track[0][0]);
+    var date_str = date.getFullYear() + "." + pad(date.getMonth() + 1) + "." + pad(date.getDate());
+
+    var time = this.track[last][0] - this.track[0][0];
+    var t = new Date(time);
+    var time_str = pad(t.getUTCHours()) + ":" + pad(t.getUTCMinutes()) + ":" + pad(t.getUTCSeconds());
+
+    // set
+    $("#summary-header").text(time_str + ' / ' + distance_str);
+    $("#summary-date").text(date_str);
+    $("#summary-time").text(time_str);
+    $("#summary-distance").text(distance_str);
+    $("#summary-alt").text('max: ' + max_alt.toFixed(0) + ' m / min: ' + min_alt.toFixed(0) + ' m');
+};
+
+
+function pad(n) { return n<10 ? '0'+n : n; }

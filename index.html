@@ -68,6 +68,21 @@
   <div id="graph-modal" class="modal bottom-sheet">
     <a class="waves-effect waves-light btn-flat modal-close"><i class="material-icons">close</i></a>
 	<div id="graph"></div>
+	<ul id="data-accordion" class="collapsible" data-collapsible="accordion">
+      <li>
+        <div class="collapsible-header"><i class="material-icons">arrow_drop_down</i><span id="summary-header">00:00:00 / 0.0 km</span></div>
+        <div class="collapsible-body">
+		  <table class="bordered">
+			<tbody>
+			  <tr><th>Date</th><td id="summary-date">2000.00.00</td>
+			  <tr><th>Time</th><td id="summary-time">00:00:00</td>
+			  <tr><th>Distance</th><td id="summary-distance">0.0 km</td>
+			  <tr><th>Altitude</th><td id="summary-alt">max: 0 m / min: 0 m</td>
+			</tbody>
+		  </table>
+		</div>
+      </li>
+    </ul>
   </div>
     
     <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
