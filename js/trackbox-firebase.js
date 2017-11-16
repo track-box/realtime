@@ -46,6 +46,7 @@ function TrackboxFirebaseTracking(trackid, map) {
     });
     
     this.track = new TrackboxTrack(map);
+    trackbox.track = this.track;
 
     this.$alt = $("#footer-altitude span");
     this.$heading = $("#footer-heading span");

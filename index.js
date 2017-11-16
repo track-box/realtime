@@ -30,6 +30,7 @@ $(function(){
     $("#footer-bar").click(function(){
 		$("#graph-modal").modal("open");
         $(".modal-overlay").hide();
+        trackbox.track.drawGraph();
     });
 });
 

@@ -152,7 +152,7 @@ TrackboxTrack.prototype.showInfoWindowFromLatLng = function (lat, lng){
 };
 
 
-TrackboxTrack.prototype.showInfoWindow = function (t){
+TrackboxTrack.prototype.showInfoWindow = function(t) {
     if (this._preventInfoWindow) return;
     if (this._infoWindow) this._infoWindow.close();
 
@@ -171,5 +171,109 @@ TrackboxTrack.prototype.showInfoWindow = function (t){
         position: new google.maps.LatLng(this.track[t][1], this.track[t][2])
     });
     this._infoWindow.open(this.map);
+};
+
+
+TrackboxTrack.prototype.drawGraph = function() {
+    // data
+    var data_alt = [];
+    var data_speed = [];
+    for (var i = 0; i < this.track.length; i++){
+        var trkp = this.track[i];
+        var time = trkp[0] + 9 * 3600 * 1000;
+        data_alt.push([time, Math.round(trkp[3])]);
+        data_speed.push([time, Math.round(trkp[4]*10)/10]);
+    }
+
+    $('#graph').highcharts({
+        chart: {
+            zoomType: 'x',
+            height: 220,
+            spacingTop: 30,
+            spacingBottom: 0
+        },
+        title: {
+            text: ""  
+        },
+        xAxis: {
+            type: 'datetime',
+        },
+        yAxis: [{
+            title: "",
+            labels: {
+                align: "left",
+                x: 0,
+                y: -2,
+                style: { "font-size": 7 }
+            },
+            min: 0
+        },{
+            title: "",
+            labels: {
+                align: "left",
+                x: -10,
+                y: -2,
+                style: { "font-size": 7 }    
+            },
+            opposite: true,
+            min: 0,
+            minRange: 10
+        }],
+        legend: {},
+        credits: {
+            enabled: false  
+        },
+        tooltip: {
+            xDateFormat: '%H:%M:%S',
+            shared: true
+        },
+        series: [{
+            type: 'line',
+            name: 'altitude(m)',
+            color: "#2196F3",
+            yAxis: 0,
+            marker: {
+                enabled: false
+            },
+            data: data_alt
+        },{
+            type: 'line',
+            name: 'speed(m/s)',
+            color: "#E91E63",
+            yAxis: 1,
+            marker: {
+                enabled: false
+            },
+            data: data_speed
+        }],
+        plotOptions: {
+            series: {
+                point: {
+                    events: {
+                        mouseOver: function() {
+                            trackbox.track.showMarker(this.index);
+                        },
+                        mouseOut: function() {
+                            trackbox.track.hideMarker();
+                        }
+                    }
+                }
+            }
+        }
+    });
+};
+
+TrackboxTrack.prototype.showMarker = function(t) {
+    if (!this._marker) {
+        this._marker = new google.maps.Marker();
+    }
+
+    var pos = new google.maps.LatLng(this.track[t][1], this.track[t][2])
+    this._marker.setPosition(pos);
+    this._marker.setMap(this.map);
+};
+
+TrackboxTrack.prototype.hideMarker = function() {
+    if (this._marker) this._marker.setMap(null);
 };
 
