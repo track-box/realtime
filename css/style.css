@@ -63,3 +63,20 @@ body {
     font-size: 20px;
     line-height: 20px;
 }
+
+#graph-modal .modal-close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 0 5px;
+	height: 24px;
+	line-height: 24px;
+}
+#graph-modal .modal-close i {
+	font-size: 1.1rem;
+}
+#graph {
+	width: 100%;
+	height: 200px;
+}
+

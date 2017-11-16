@@ -64,6 +64,11 @@
 			<a id="waypoint-info-href" class="btn-floating waves-effect waves-light blue darken-4 z-depth-0" style="position:absolute; right:15px; bottom:15px;"><i class="material-icons" href="">map</i></a>
 		</div>
 	</div>
+
+  <div id="graph-modal" class="modal bottom-sheet">
+    <a class="waves-effect waves-light btn-flat modal-close"><i class="material-icons">close</i></a>
+	<div id="graph"></div>
+  </div>
     
     <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="lib/materialize.min.js"></script>
@@ -82,5 +87,7 @@
 	<script src="js/map.js"></script>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5tPBVnaUVQt8Uf-RUMhJGLLnIlXtoLkQ&libraries=geometry&callback=onMapsApiLoaded"></script>
+
+	<script src="http://code.highcharts.com/highcharts.js"></script>
 </body>
 </html>
