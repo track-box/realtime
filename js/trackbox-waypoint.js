@@ -96,7 +96,7 @@ function initTrackboxWaypoint() {
             $("#waypoint-info").modal().modal('open');
             
             $("#waypoint-info-add").click(function(){
-			    trackbox.goals.addGoal($(this).attr("name"));
+			    trackbox.goals.addGoal($(this).attr("name"), true);
 			    $("#waypoint-info").modal("close");
 		    });
         };

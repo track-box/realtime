@@ -28,6 +28,7 @@ TrackboxGoals.prototype.addGoal = function(x, noshow) {
 	}
 
 	if (this._goals[x]){
+	    this._showGoal(this._goals[x].pos);
 		return;
 	}
 
