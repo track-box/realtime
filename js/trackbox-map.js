@@ -37,6 +37,9 @@ TrackboxMap.prototype.addTo = function(map) {
 	if (this._def.waypoint_url){
 		this._waypoint = new TrackboxWaypoints(this._def.waypoint_url, map);
 	}
+
+    TrackboxLongTouch = initTrackboxLongTouch();
+    this._longtouch = new TrackboxLongTouch(map, "map");
 };
 
 
@@ -222,17 +225,69 @@ TrackboxMap.prototype._showCurrentPosition = function(pos) {
 
 
 function initTrackboxLongTouch() {
+    var TrackboxLongTouch;
     TrackboxLongTouch.prototype = new google.maps.OverlayView();
 
-    function TrackboxLongTouch(map, goals) {
+    function TrackboxLongTouch(map, div_id) {
         this.map = map;
-        this._goals = goals;
         this.setMap(map);
+        this._initEvents(div_id);
     };
 
     TrackboxLongTouch.prototype.onAdd = function() {};
     TrackboxLongTouch.prototype.draw = function() {};
     TrackboxLongTouch.prototype.onRemove = function() {};
+
+    TrackboxLongTouch.prototype._initEvents = function(div_id) {
+        var div = document.getElementById(div_id);
+        var self = this;
+
+        div.addEventListener("touchstart", function (e){ self._touchStart(e) });
+        div.addEventListener("mousedown", function (e){ self._touchStart(e) });
+
+        div.addEventListener("touchend", function (e){ self._touchStop(e) });
+        div.addEventListener("mouseup", function (e){ self._touchStop(e) });
+        div.addEventListener("mouseout", function (e){ self._touchStop(e) });
+
+        this.map.addListener('drag', function (e){ self._touchStop(e) });
+    };
+
+
+    TrackboxLongTouch.prototype._touchStart = function(e) {
+        this._touched = true;
+        this._touch_time = 0;
+        clearInterval(document.interval);
+
+        var self = this;
+        document.interval = setInterval(function(){
+            self._touch_time += 100;
+            if (self._touch_time >= 500) {
+                var X, Y;
+                if (e.type == "touchstart"){
+                    X = e.touches[0].clientX;
+                    Y = e.touches[0].clientY;
+
+                }else{
+                    X = e.clientX;
+                    Y = e.clientY;
+                }
+
+                self.show(X, Y);
+                clearInterval(document.interval);
+            }
+        }, 100)
+    };
+
+    TrackboxLongTouch.prototype._touchStop = function(e) {
+        if (this._touched){
+            clearInterval(document.interval);
+        }
+
+        var self = this;
+        setTimeout(function(){
+            self._touched = false;
+        }, 200);
+    };
 
     TrackboxLongTouch.prototype.getLatLng = function(x, y) {
         return this.getProjection().fromContainerPixelToLatLng(new google.maps.Point(x, y));
@@ -245,17 +300,20 @@ function initTrackboxLongTouch() {
             map: this.map
         });
 
-        var digit = this._goals._getDigit(pos.lat(), pos.lng());
+        var digit = trackbox.goals._getDigit(pos.lat(), pos.lng());
 
         $("#waypoint-info-name").text(digit);
-        $("#waypoint-info-add").attr("name", digit);
         $("#waypoint-info-href").attr("href", "http://maps.google.com/maps?q="+ pos.lat() +","+ pos.lng());
-        $("#waypoint-info").openModal({
+        $("#waypoint-info").modal({
             complete: function(){ marker.setMap(null); }
-        });	
+        }).modal("open");
         $("#waypoint-info-add").click(function(){
+            trackbox.goals._addPoint(digit, pos.lat(), pos.lng(), true);
             marker.setMap(null);
+            $("#waypoint-info").modal("close");
         });
     };
+
+    return TrackboxLongTouch;
 }
 
