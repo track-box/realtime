@@ -307,7 +307,7 @@ function initTrackboxLongTouch() {
         $("#waypoint-info").modal({
             complete: function(){ marker.setMap(null); }
         }).modal("open");
-        $("#waypoint-info-add").click(function(){
+        $("#waypoint-info-add").off("click").click(function(){
             trackbox.goals._addPoint(digit, pos.lat(), pos.lng(), true);
             marker.setMap(null);
             $("#waypoint-info").modal("close");
