@@ -59,6 +59,7 @@ TrackboxGoal.prototype.onAdd = function() {
 	this._width = width;
 
 	this._div.onclick = function () {
+        trackbox.track.preventInfoWindow();
 		trackbox.goals._showMarkerInfo(self._key);
 	};
     

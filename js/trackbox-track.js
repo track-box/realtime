@@ -172,6 +172,12 @@ TrackboxTrack.prototype.showInfoWindow = function(t) {
     this._infoWindow.open(this.map);
 };
 
+TrackboxTrack.prototype.preventInfoWindow = function (){
+    this._preventInfoWindow = true;
+    var self = this;
+    setTimeout(function(){ self._preventInfoWindow = false; }, 200);
+};
+
 
 TrackboxTrack.prototype.drawGraph = function() {
     if (this.track.length == 0) return; 
