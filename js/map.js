@@ -22,13 +22,14 @@ function onMapsApiLoaded() {
             $("#loader").hide();
         
             // traking
-            var lastUpdate = trackbox.tracking.initTrack();
+            trackbox.tracking.initTrack(function(lastUpdate){
+                // within 3hours
+                if (!lastUpdate || Date.now() - lastUpdate < 3 * 3600 * 1000){
+                    trackbox.tracking.start(lastUpdate);
+                } 
+            });
             trackbox.tracking.initGoals();
 
-            // within 3hours
-            if (!lastUpdate || Date.now() - lastUpdate < 3 * 3600 * 1000){
-                trackbox.tracking.start(lastUpdate);
-            }
         });
     }
 

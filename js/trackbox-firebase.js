@@ -27,46 +27,54 @@ function TrackboxFirebaseTracking(trackid, map) {
 
 TrackboxFirebaseTracking.prototype.init = function(callback) {
     var self = this;
+    //this.db.ref("/tracks/" + this.trackid + "/map").once("value", function(d){
     this.db.ref("/tracks/" + this.trackid).once("value", function(d){
         self.snapshot = d;
         callback(d.child("map").val());
+        //callback(d.val());
     });
 };
 
 TrackboxFirebaseTracking.prototype.initTrack = function() {
-    var points = this.snapshot.child("tracks").val();
+    this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
+    var self = this;
+    this.trackPoints.once("value", function(d) {
+        var points = d.val();
 
-    var position, alt, timestamp, speed, headin;
-    for (var i in points){
-        var point = points[i];
-        position = new google.maps.LatLng(point[1], point[2]);
-        alt = point[3];
-        timestamp = point[0];
-        speed = point[4];
-        heading = point[5];
-        this.track.addTrackPoint(position, point);
-    }
+        var position, alt, timestamp, speed, headin;
+        for (var i in points){
+            var point = points[i];
+            position = new google.maps.LatLng(point[1], point[2]);
+            alt = point[3];
+            timestamp = point[0];
+            speed = point[4];
+            heading = point[5];
+            self.track.addTrackPoint(position, point);
+        }
 
-    if (points){
-        // last point
-        this.setLastPointInfo(alt, heading, speed);
-         
-        this.track.drawLastPosition(position);
-        this.track.drawDirection(position, speed, heading);
-        return timestamp;
-    }
-
+        if (points){
+            // last point
+            self.setLastPointInfo(alt, heading, speed);
+             
+            self.track.drawLastPosition(position);
+            self.track.drawDirection(position, speed, heading);
+            return timestamp;
+        }
+    });
 };
 
 TrackboxFirebaseTracking.prototype.initGoals = function() {
-    var goals = this.snapshot.child("goals").val();
-    for (var key in goals){
-        trackbox.goals.addRemoteGoal(key, goals[key]);
-    }
+    this.goals = this.db.ref("/tracks/" + this.trackid + "/goals");
+    var self = this;
+    this.goals.once("value", function(d) {
+        var goals = d.val();
+        for (var key in goals){
+            trackbox.goals.addRemoteGoal(key, goals[key]);
+        }
+    });
 };
 
 TrackboxFirebaseTracking.prototype.start = function(startTime) {
-    this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
     var self = this;
 
     // on added filter by timestamp
@@ -81,7 +89,6 @@ TrackboxFirebaseTracking.prototype.start = function(startTime) {
         });
     }
     
-    this.goals = this.db.ref("/tracks/" + this.trackid + "/goals");
     this.goals.on("child_added", function(d) {
         self.goalAdded(d);
     });
