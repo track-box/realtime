@@ -35,7 +35,7 @@ TrackboxFirebaseTracking.prototype.init = function(callback) {
     });
 };
 
-TrackboxFirebaseTracking.prototype.initTrack = function() {
+TrackboxFirebaseTracking.prototype.initTrack = function(callback) {
     this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
     var self = this;
     this.trackPoints.once("value", function(d) {
@@ -55,11 +55,11 @@ TrackboxFirebaseTracking.prototype.initTrack = function() {
         if (points){
             // last point
             self.setLastPointInfo(alt, heading, speed);
-             
             self.track.drawLastPosition(position);
             self.track.drawDirection(position, speed, heading);
-            return timestamp;
         }
+        
+        callback(timestamp);
     });
 };
 
