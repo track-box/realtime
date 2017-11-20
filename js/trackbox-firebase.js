@@ -27,11 +27,8 @@ function TrackboxFirebaseTracking(trackid, map) {
 
 TrackboxFirebaseTracking.prototype.init = function(callback) {
     var self = this;
-    //this.db.ref("/tracks/" + this.trackid + "/map").once("value", function(d){
-    this.db.ref("/tracks/" + this.trackid).once("value", function(d){
-        self.snapshot = d;
-        callback(d.child("map").val());
-        //callback(d.val());
+    this.db.ref("/tracks/" + this.trackid + "/map").once("value", function(d){
+        callback(d.val());
     });
 };
 
