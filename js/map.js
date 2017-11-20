@@ -13,10 +13,13 @@ function onMapsApiLoaded() {
         trackbox.tracking = new TrackboxFirebaseTracking(trackid, map);
 
         trackbox.tracking.init(function(mapdef){
+
             // map init
             trackbox.map = new TrackboxMap(mapdef);
             trackbox.map.addTo(map);
             trackbox.goals = new TrackboxGoals(map, trackbox.map);
+            
+            $("#loader").hide();
         
             // traking
             var lastUpdate = trackbox.tracking.initTrack();
