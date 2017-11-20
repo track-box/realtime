@@ -25,18 +25,23 @@ function TrackboxMap(def) {
 TrackboxMap.prototype.addTo = function(map) {
 	this.map = map;
 
-	//map.fitBounds(this._tileBounds);
-
 	this._setOverlayControl();
+	this._show = true;
 
 	map.mapTypes.set(this._def.name, this);
-	//map.setMapTypeId(this._def.name);
 	map.overlayMapTypes.insertAt(0, this);
-	this._show = true;
 
 	if (this._def.waypoint_url){
 		this._waypoint = new TrackboxWaypoints(this._def.waypoint_url, map);
 	}
+
+    // set map view
+    map.setZoom(12);
+    if (this._def.center){
+        map.setCenter(new google.maps.LatLng(this._def.center[0], this._def.center[1]));
+    }else{
+        map.setCenter(this._tileBounds.getCenter());   
+    }
 
     TrackboxLongTouch = initTrackboxLongTouch();
     this._longtouch = new TrackboxLongTouch(map, "map");
@@ -261,7 +266,7 @@ function initTrackboxLongTouch() {
         var self = this;
         document.interval = setInterval(function(){
             self._touch_time += 100;
-            if (self._touch_time >= 500) {
+            if (self._touch_time >= 1000) {
                 var X, Y;
                 if (e.type == "touchstart"){
                     X = e.touches[0].clientX;

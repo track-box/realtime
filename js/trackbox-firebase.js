@@ -14,9 +14,18 @@ firebase.initializeApp(config);
 /** @constructor */
 function TrackboxFirebaseTracking(trackid, map) {
     this.trackid = trackid;
-    
+    this.map = map;
     this.db = firebase.database();
-    this.trackPoints = this.db.ref("/tracks/" + trackid + "/tracks");
+}
+
+TrackboxFirebaseTracking.prototype.getMapDef = function(callback) {
+    this.db.ref("/tracks/" + this.trackid + "/map").once("value", function(d){
+        callback(d.val());
+    });
+};
+
+TrackboxFirebaseTracking.prototype.start = function() {
+    this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
     var self = this;
     this.trackPoints.once("value", function(d) {
         // first draw all
@@ -34,7 +43,7 @@ function TrackboxFirebaseTracking(trackid, map) {
         }
     });
     
-    this.goals = this.db.ref("/tracks/" + trackid + "/goals");
+    this.goals = this.db.ref("/tracks/" + this.trackid + "/goals");
     this.goals.on("child_added", function(d) {
         self.goalAdded(d);
     });
@@ -45,13 +54,13 @@ function TrackboxFirebaseTracking(trackid, map) {
         self.goalRemoved(d);
     });
     
-    this.track = new TrackboxTrack(map);
+    this.track = new TrackboxTrack(this.map);
     trackbox.track = this.track;
 
     this.$alt = $("#footer-altitude span");
     this.$heading = $("#footer-heading span");
     this.$speed = $("#footer-speed span");
-}
+};
 
 TrackboxFirebaseTracking.prototype.initTrack = function(d) {
     var points = d.val();
