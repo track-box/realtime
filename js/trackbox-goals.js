@@ -109,6 +109,8 @@ TrackboxGoals.prototype._addPoint = function(name, lat, lon, noshow) {
 };
 
 TrackboxGoals.prototype.addRemoteGoal = function(id, data) {
+    if (this._goals[id]) return;
+
 	var pos = new google.maps.LatLng(data.lat, data.lon);
     var goal = new TrackboxGoal(id, data.name, pos, { coord: data.coord, circle: data.circle }, this.map);
     

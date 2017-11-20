@@ -12,15 +12,20 @@ function onMapsApiLoaded() {
         var trackid = location.hash.substr(1);
         trackbox.tracking = new TrackboxFirebaseTracking(trackid, map);
 
-        // map init
-        trackbox.tracking.getMapDef(function(mapdef){
+        trackbox.tracking.init(function(mapdef){
+            // map init
             trackbox.map = new TrackboxMap(mapdef);
             trackbox.map.addTo(map);
-            // set center
             trackbox.goals = new TrackboxGoals(map, trackbox.map);
         
             // traking
-            trackbox.tracking.start();
+            var lastUpdate = trackbox.tracking.initTrack();
+            trackbox.tracking.initGoals();
+
+            // within 3hours
+            if (!lastUpdate || Date.now() - lastUpdate < 3 * 3600 * 1000){
+                trackbox.tracking.start(lastUpdate);
+            }
         });
     }
 

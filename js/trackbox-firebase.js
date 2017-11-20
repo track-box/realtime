@@ -16,43 +16,6 @@ function TrackboxFirebaseTracking(trackid, map) {
     this.trackid = trackid;
     this.map = map;
     this.db = firebase.database();
-}
-
-TrackboxFirebaseTracking.prototype.getMapDef = function(callback) {
-    this.db.ref("/tracks/" + this.trackid + "/map").once("value", function(d){
-        callback(d.val());
-    });
-};
-
-TrackboxFirebaseTracking.prototype.start = function() {
-    this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
-    var self = this;
-    this.trackPoints.once("value", function(d) {
-        // first draw all
-        var startTime = self.initTrack(d);
-
-        // on added filter by timestamp
-        if (startTime){
-            self.trackPoints.orderByChild("0").startAt(startTime + 1).on("child_added", function(d) {
-                self.trackPointAdded(d);
-            });
-        }else{
-            self.trackPoints.on("child_added", function(d) {
-                self.trackPointAdded(d);
-            });
-        }
-    });
-    
-    this.goals = this.db.ref("/tracks/" + this.trackid + "/goals");
-    this.goals.on("child_added", function(d) {
-        self.goalAdded(d);
-    });
-    this.goals.on("child_changed", function(d) {
-        self.goalChanged(d);
-    });
-    this.goals.on("child_removed", function(d) {
-        self.goalRemoved(d);
-    });
     
     this.track = new TrackboxTrack(this.map);
     trackbox.track = this.track;
@@ -60,10 +23,18 @@ TrackboxFirebaseTracking.prototype.start = function() {
     this.$alt = $("#footer-altitude span");
     this.$heading = $("#footer-heading span");
     this.$speed = $("#footer-speed span");
+}
+
+TrackboxFirebaseTracking.prototype.init = function(callback) {
+    var self = this;
+    this.db.ref("/tracks/" + this.trackid).once("value", function(d){
+        self.snapshot = d;
+        callback(d.child("map").val());
+    });
 };
 
-TrackboxFirebaseTracking.prototype.initTrack = function(d) {
-    var points = d.val();
+TrackboxFirebaseTracking.prototype.initTrack = function() {
+    var points = this.snapshot.child("tracks").val();
 
     var position, alt, timestamp, speed, headin;
     for (var i in points){
@@ -84,12 +55,47 @@ TrackboxFirebaseTracking.prototype.initTrack = function(d) {
         this.track.drawDirection(position, speed, heading);
         return timestamp;
     }
+
+};
+
+TrackboxFirebaseTracking.prototype.initGoals = function() {
+    var goals = this.snapshot.child("goals").val();
+    for (var key in goals){
+        trackbox.goals.addRemoteGoal(key, goals[key]);
+    }
+};
+
+TrackboxFirebaseTracking.prototype.start = function(startTime) {
+    this.trackPoints = this.db.ref("/tracks/" + this.trackid + "/tracks");
+    var self = this;
+
+    // on added filter by timestamp
+    if (startTime){
+        this.trackPoints.orderByChild("0").startAt(startTime + 1).on("child_added", function(d) {
+            self.trackPointAdded(d);
+        });
+
+    }else{
+        this.trackPoints.on("child_added", function(d) {
+            self.trackPointAdded(d);
+        });
+    }
+    
+    this.goals = this.db.ref("/tracks/" + this.trackid + "/goals");
+    this.goals.on("child_added", function(d) {
+        self.goalAdded(d);
+    });
+    this.goals.on("child_changed", function(d) {
+        self.goalChanged(d);
+    });
+    this.goals.on("child_removed", function(d) {
+        self.goalRemoved(d);
+    });
 };
 
 
 TrackboxFirebaseTracking.prototype.trackPointAdded = function(d) {
     var point = d.val();
-    console.log(point);
 
     var position = new google.maps.LatLng(point[1], point[2]);
     var alt = point[3];
