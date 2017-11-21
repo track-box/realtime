@@ -38,7 +38,7 @@ TrackboxFirebaseTracking.prototype.initTrack = function(callback) {
     this.trackPoints.once("value", function(d) {
         var points = d.val();
 
-        var position, alt, timestamp, speed, headin;
+        var position, alt, timestamp, speed, heading;
         for (var i in points){
             var point = points[i];
             position = new google.maps.LatLng(point[1], point[2]);

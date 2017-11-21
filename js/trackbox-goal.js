@@ -71,7 +71,7 @@ TrackboxGoal.prototype.draw = function() {
 	var pos = this._getPosFromLatLng(this._pos);
 	if (this._div){
 		this._div.style.left = (pos.x - this._width/2) + 'px';
-		this._div.style.top = (pos.y - 28) + 'px';
+		this._div.style.top = (pos.y - 26) + 'px';
 	}
 };
 
